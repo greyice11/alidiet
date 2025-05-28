@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Fitness & Diet Plan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .targets {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .day-selector {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .day-selector::-webkit-scrollbar {
+            display: none;
+        }
+
+        .day-btn {
+            flex: 0 0 auto;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border: none;
+            border-radius: 20px;
+            background: #e9ecef;
+            color: #6c757d;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .day-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .diet-header {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+
+        .workout-header {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .core-header {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .meal {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .meal:last-child {
+            border-bottom: none;
+        }
+
+        .meal-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+            text-transform: capitalize;
+            font-size: 16px;
+        }
+
+        .food-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .food-item:last-child {
+            border-bottom: none;
+        }
+
+        .food-item input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #667eea;
+        }
+
+        .food-text {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .food-name {
+            font-weight: 500;
+            color: #343a40;
+        }
+
+        .food-quantity {
+            color: #6c757d;
+            font-size: 13px;
+        }
+
+        .workout-focus {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .exercise-group {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .exercise-group:last-child {
+            border-bottom: none;
+        }
+
+        .exercise-group-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .exercise-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 0;
+        }
+
+        .exercise-item input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #28a745;
+        }
+
+        .exercise-text {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .exercise-name {
+            font-weight: 500;
+            color: #343a40;
+        }
+
+        .exercise-sets {
+            color: #6c757d;
+            font-size: 13px;
+        }
+
+        .cardio-item {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .core-exercise {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .core-exercise:last-child {
+            border-bottom: none;
+        }
+
+        .core-exercise input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #fd7e14;
+        }
+
+        .progress-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .day-btn {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💪 My Fitness Plan</h1>
+            <div class="targets">🎯 2100-2200 Cals | 150-160g Protein</div>
+        </div>
+
+        <div class="day-selector">
+            <button class="day-btn active" data-day="monday">Mon</button>
+            <button class="day-btn" data-day="tuesday">Tue</button>
+            <button class="day-btn" data-day="wednesday">Wed</button>
+            <button class="day-btn" data-day="thursday">Thu</button>
+            <button class="day-btn" data-day="friday">Fri</button>
+            <button class="day-btn" data-day="saturday">Sat</button>
+            <button class="day-btn" data-day="sunday">Sun</button>
+        </div>
+
+        <div class="content">
+            <!-- Diet Section -->
+            <div class="section">
+                <div class="section-header diet-header">🍽️ Diet Plan</div>
+                <div id="diet-content"></div>
+            </div>
+
+            <!-- Workout Section -->
+            <div class="section">
+                <div class="section-header workout-header">🏋️ Workout Plan</div>
+                <div id="workout-content"></div>
+            </div>
+
+            <!-- Core Routine Section -->
+            <div class="section">
+                <div class="section-header core-header">🔥 Core Routine (3-4x/week)</div>
+                <div id="core-content"></div>
+            </div>
+        </div>
+
+        <div class="progress-bar" id="progress-bar">Progress: 0%</div>
+    </div>
+
+    <script>
+        const data = {
+            "dailyTargets": {
+                "calories": "2100-2200",
+                "protein": "150-160g"
+            },
+            "coreRoutine": [
+                "25 Sit-ups",
+                "25 Leg Raises", 
+                "25 Bicycle Slow Crunches",
+                "25 Knee Touch Crunches"
+            ],
+            "weeklyPlan": [
+                {
+                    "day": "Monday",
+                    "diet": {
+                        "lunch": [
+                            {"item": "Grilled Chicken Breast", "quantity": "180g"},
+                            {"item": "Brown Rice (cooked)", "quantity": "1 cup"},
+                            {"item": "Mixed Steamed Vegetables (okra, carrots)", "quantity": "2 cups"}
+                        ],
+                        "dinner_pre_workout": [
+                            {"item": "Lamb Keema (lean mince) with onions, tomatoes, peas", "quantity": "150g"},
+                            {"item": "Whole Wheat Tortilla", "quantity": "1 large (or 2 small)"},
+                            {"item": "Side Salad", "quantity": ""}
+                        ],
+                        "post_workout_night": [
+                            {"item": "Whey Protein in Water", "quantity": "1 scoop"}
+                        ]
+                    },
+                    "workout": {
+                        "focus": "Chest & Triceps",
+                        "warm_up": "5-10 mins (light cardio, dynamic stretches)",
+                        "exercises": [
+                            {"name": "Chest Press Machine", "sets_reps": "3x8-12"},
+                            {"name": "Iso Lateral Incline Press / Incline DB Press", "sets_reps": "3x8-12"},
+                            {"name": "Pectoral Fly Machine", "sets_reps": "3x10-15"},
+                            {"name": "Seated Dip Machine", "sets_reps": "3x10-15"},
+                            {"name": "DB Overhead Triceps Ext / Cable Pushdowns", "sets_reps": "3x10-15"}
+                        ],
+                        "cardio": "Treadmill: 30 mins (5 min warm-up, 20 min moderate jog RPE 6-7, 5 min cool-down)",
+                        "cool_down": "5-10 mins (static stretches)"
+                    }
+                },
+                {
+                    "day": "Tuesday",
+                    "diet": {
+                        "lunch": [
+                            {"item": "Chickpea & Spinach Curry (100g dry chickpeas)", "quantity": "1.5 cups"},
+                            {"item": "Quinoa (cooked)", "quantity": "1/2 cup"},
+                            {"item": "Cucumber Raita", "quantity": ""}
+                        ],
+                        "dinner_pre_workout": [
+                            {"item": "Baked/Grilled Fish (Mackerel/Cod) or Chicken Breast", "quantity": "180g"},
+                            {"item": "Roasted Sweet Potato", "quantity": "200g"},
+                            {"item": "Asparagus/Green Beans", "quantity": ""}
+                        ],
+                        "post_workout_night": [
+                            {"item": "Whey Protein in Water", "quantity": "1 scoop"}
+                        ]
+                    },
+                    "workout": {
+                        "focus": "Back & Biceps",
+                        "warm_up": "5-10 mins",
+                        "exercises": [
+                            {"name": "Lat Pulldown Machine", "sets_reps": "3x8-12"},
+                            {"name": "Seated Row Machine / Iso Lateral DY Row", "sets_reps": "3x8-12"},
+                            {"name": "Iso Lateral High Row / Barbell Rows (Smith)", "sets_reps": "3x8-12"},
+                            {"name": "Pullover Machine", "sets_reps": "2x12-15"},
+                            {"name": "Biceps Curl Machine / DB Curls", "sets_reps": "3x10-15"},
+                            {"name": "Hammer Curls", "sets_reps": "3x10-15"}
+                        ],
+                        "cardio": "Cycle Machine (HIIT): 30 mins (5 min warm-up, 10x (1 min high/1 min low), 5 min cool-down)",
+                        "cool_down": "5-10 mins"
+                    }
+                },
+                {
+                    "day": "Wednesday",
+                    "diet": {
+                        "lunch": [
+                            {"item": "Lentil Soup (Dal - 100g dry lentils)", "quantity": "2 cups"},
+                            {"item": "Hard-Boiled Eggs", "quantity": "2"},
+                            {"item": "Side Salad", "quantity": ""}
+                        ],
+                        "dinner_pre_workout": [
+                            {"item": "Chicken & Vegetable Stir-fry (chicken 180g)", "quantity": "2-3 cups veggies"},
+                            {"item": "Brown Rice (cooked)", "quantity": "1/2 cup"}
+                        ],
+                        "post_workout_night": [
+                            {"item": "Whey Protein in Water", "quantity": "1 scoop"}
+                        ]
+                    },
+                    "workout": {
+                        "focus": "Legs",
+                        "warm_up": "5-10 mins",
+                        "exercises": [
+                            {"name": "Leg Press Machine", "sets_reps": "4x10-15"},
+                            {"name": "Hack Squat Machine / Smith Squats", "sets_reps": "3x8-12"},
+                            {"name": "Leg Extension Machine", "sets_reps": "3x12-15"},
+                            {"name": "Seated Leg Curl / Iso Kneeling Leg Curl", "sets_reps": "3x12-15"},
+                            {"name": "Glute Drive Machine", "sets_reps": "3x12-15"},
+                            {"name": "Calf Raises (Leg Press/Smith)", "sets_reps": "3x15-20"}
+                        ],
+                        "cardio": "Stair Mill: 30 mins (25 min steady climb RPE 6-7, 5 min cool-down)",
+                        "cool_down": "5-10 mins"
+                    }
+                },
+                {
+                    "day": "Thursday",
+                    "diet": {
+                        "lunch": [
+                            {"item": "Leftover Chicken Stir-fry OR Turkey/Lean Beef Slices", "quantity": "150g"},
+                            {"item": "Large Salad", "quantity": ""},
+                            {"item": "Whole Wheat Tortilla", "quantity": "1"}
+                        ],
+                        "dinner_pre_workout": [
+                            {"item": "Homemade Lean Beef Burger Patties", "quantity": "150g"},
+                            {"item": "Lettuce Wrap OR 1 Whole Wheat Bun", "quantity": ""},
+                            {"item": "Baked Potato Wedges", "quantity": "150g"},
+                            {"item": "Side Salad", "quantity": ""}
+                        ],
+                        "post_workout_night": [
+                            {"item": "Whey Protein in Water", "quantity": "1 scoop"}
+                        ]
+                    },
+                    "workout": {
+                        "focus": "Shoulders & Abs",
+                        "warm_up": "5-10 mins",
+                        "exercises": [
+                            {"name": "Shoulder Press Machine / DB Shoulder Press", "sets_reps": "3x8-12"},
+                            {"name": "Iso Lateral Shoulder Press", "sets_reps": "3x8-12"},
+                            {"name": "DB Lateral Raises / Bentover Lateral Raise Machine", "sets_reps": "3x12-15"},
+                            {"name": "Cable Face Pulls", "sets_reps": "3x15-20"},
+                            {"name": "Leg Raise Machine", "sets_reps": "3x15-20"},
+                            {"name": "Cable Crunches / Planks", "sets_reps": "3x to failure"}
+                        ],
+                        "cardio": "Treadmill (Incline): 30 mins (5 min warm-up, 20 min brisk walk challenging incline RPE 7, 5 min cool-down)",
+                        "cool_down": "5-10 mins"
+                    }
+                },
+                {
+                    "day": "Friday",   
+                    "diet": {
+                        "lunch": [
+                            {"item": "Eating Out: Grilled Tandoori Chicken/Fish/Kebab", "quantity": "~200g protein"},
+                            {"item": "Salad/Grilled Veggies (no fries/excess rice)", "quantity": ""}
+                        ],
+                        "dinner_pre_workout": [
+                            {"item": "Chicken Salad (cooked chicken 150g, mixed greens, light vinaigrette)", "quantity": ""},
+                            {"item": "Lentil Soup", "quantity": "1 small bowl"}
+                        ],
+                        "post_workout_night": [
+                            {"item": "Whey Protein in Water", "quantity": "1 scoop"}
+                        ]
+                    },
+                    "workout": {
+                        "focus": "Full Body A",
+                        "warm_up": "5-10 mins",
+                        "exercises": [
+                            {"name": "Smith Machine Squats", "sets_reps": "3x8-10"},
+                            {"name": "Iso Lateral Horizontal Bench Press", "sets_reps": "3x8-10"},
+                            {"name": "Iso Lateral Low Row", "sets_reps": "3x8-10"},
+                            {"name": "DB Shoulder Press", "sets_reps": "3x10-12"},
+                            {"name": "DB Bicep Curls", "sets_reps": "2x10-12"},
+                            {"name": "Cable Triceps Pushdowns", "sets_reps": "2x10-12"}
+                        ],
+                        "cardio": "Cycle Machine (Steady State): 30 mins (moderate pace RPE 5-6)",
+                        "cool_down": "5-10 mins"
+                    }
+                },
+                {
+                    "day": "Saturday",
+                    "diet": {
+                        "lunch": [
+                            {"item": "Chicken/Lamb Biryani (meat 150g, 3/4 cup cooked rice MAX)", "quantity": ""},
+                            {"item": "Veggies in biryani", "quantity": ""},
+                            {"item": "Large Raita & Kachumber Salad", "quantity": ""}
+                        ],
+                        "dinner_pre_workout": [
+                            {"item": "Light: Large Salad + Grilled Chicken Breast", "quantity": "100g"},
+                            {"item": "OR 3 Egg White Omelette with Spinach", "quantity": ""}
+                        ],
+                        "post_workout_night": [
+                            {"item": "Whey Protein in Water", "quantity": "1 scoop"}
+                        ]
+                    },
+                    "workout": {
+                        "focus": "Full Body B",
+                        "warm_up": "5-10 mins",
+                        "exercises": [
+                            {"name": "Leg Press Machine", "sets_reps": "3x10-12"},
+                            {"name": "Lat Pulldown Machine", "sets_reps": "3x10-12"},
+                            {"name": "Chest Press Machine (incline)", "sets_reps": "3x10-12"},
+                            {"name": "DB Lateral Raises", "sets_reps": "3x12-15"},
+                            {"name": "Leg Curls Machine", "sets_reps": "3x12-15"},
+                            {"name": "Plank variations", "sets_reps": "3 sets"}
+                        ],
+                        "cardio": "Treadmill (Interval Sprints): 30 mins (5 min warm-up, 8x (30 sec sprint/90 sec recovery), 5 min cool-down)",
+                        "cool_down": "5-10 mins"
+                    }
+                },
+                {
+                    "day": "Sunday",
+                    "diet": {
+                        "lunch": [
+                            {"item": "Whole Wheat Macaroni (100g dry) with Lean Minced Lamb/Chicken (150g)", "quantity": ""},
+                            {"item": "Tomato-Vegetable Sauce", "quantity": ""},
+                            {"item": "Side Salad", "quantity": ""}
+                        ],
+                        "dinner_pre_workout": [
+                            {"item": "Large Omelette (1 whole egg + 3 egg whites)", "quantity": ""},
+                            {"item": "Sautéed Okra & Onions", "quantity": ""},
+                            {"item": "Small Bowl Plain Yogurt", "quantity": ""}
+                        ],
+                        "post_workout_night": [
+                            {"item": "Whey Protein in Water", "quantity": "1 scoop"}
+                        ]
+                    },
+                    "workout": {
+                        "focus": "Active Recovery / Light",
+                        "warm_up": "5-10 mins",
+                        "exercises": [
+                            {"name": "Light exercises (2-3 from any day, light weight)", "sets_reps": "2-3x15-20"},
+                            {"name": "OR Core & Mobility: Bird-Dogs, Glute Bridges, Dead Bugs", "sets_reps": "3x10-12/side"},
+                            {"name": "Full body stretching", "sets_reps": ""}
+                        ],
+                        "cardio": "Light Cardio Choice: 30 mins (easy pace Treadmill/Cycle RPE 4-5)",
+                        "cool_down": "5-10 mins"
+                    }
+                }
+            ]
+        };
+
+        let currentDay = 'monday';
+        
+        function formatMealName(mealKey) {
+            const mealNames = {
+                'lunch': 'Lunch',
+                'dinner_pre_workout': 'Dinner (Pre-Workout)',
+                'post_workout_night': 'Post-Workout'
+            };
+            return mealNames[mealKey] || mealKey;
+        }
+
+        function renderDiet(dayData) {
+            const dietContent = document.getElementById('diet-content');
+            let html = '';
+            
+            Object.entries(dayData.diet).forEach(([mealKey, items]) => {
+                html += `
+                    <div class="meal">
+                        <div class="meal-title">${formatMealName(mealKey)}</div>
+                        ${items.map((food, index) => `
+                            <div class="food-item">
+                                <input type="checkbox" id="food-${mealKey}-${index}" onchange="updateProgress()">
+                                <div class="food-text">
+                                    <div class="food-name">${food.item}</div>
+                                    ${food.quantity ? `<div class="food-quantity">${food.quantity}</div>` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            });
+            
+            dietContent.innerHTML = html;
+        }
+
+        function renderWorkout(dayData) {
+            const workoutContent = document.getElementById('workout-content');
+            
+            let html = `<div class="workout-focus">Focus: ${dayData.workout.focus}</div>`;
+            
+            // Warm-up
+            html += `
+                <div class="exercise-group">
+                    <div class="exercise-group-title">Warm-up</div>
+                    <div class="exercise-item">
+                        <input type="checkbox" id="warmup" onchange="updateProgress()">
+                        <div class="exercise-text">
+                            <div class="exercise-name">${dayData.workout.warm_up}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Exercises
+            html += `
+                <div class="exercise-group">
+                    <div class="exercise-group-title">Weight Training</div>
+                    ${dayData.workout.exercises.map((exercise, index) => `
+                        <div class="exercise-item">
+                            <input type="checkbox" id="exercise-${index}" onchange="updateProgress()">
+                            <div class="exercise-text">
+                                <div class="exercise-name">${exercise.name}</div>
+                                <div class="exercise-sets">${exercise.sets_reps}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Cardio
+            html += `
+                <div class="exercise-group">
+                    <div class="exercise-group-title">Cardio</div>
+                    <div class="exercise-item">
+                        <input type="checkbox" id="cardio" onchange="updateProgress()">
+                        <div class="exercise-text">
+                            <div class="cardio-item">
+                                <div class="exercise-name">${dayData.workout.cardio}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Cool-down
+            html += `
+                <div class="exercise-group">
+                    <div class="exercise-group-title">Cool-down</div>
+                    <div class="exercise-item">
+                        <input type="checkbox" id="cooldown" onchange="updateProgress()">
+                        <div class="exercise-text">
+                            <div class="exercise-name">${dayData.workout.cool_down}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            workoutContent.innerHTML = html;
+        }
+
+        function renderCore() {
+            const coreContent = document.getElementById('core-content');
+            
+            let html = data.coreRoutine.map((exercise, index) => `
+                <div class="core-exercise">
+                    <input type="checkbox" id="core-${index}" onchange="updateProgress()">
+                    <div class="exercise-text">
+                        <div class="exercise-name">${exercise}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            coreContent.innerHTML = html;
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked');
+            const percentage = Math.round((checked.length / checkboxes.length) * 100);
+            
+            document.getElementById('progress-bar').textContent = `Progress: ${percentage}%`;
+        }
+
+        function switchDay(day) {
+            currentDay = day;
+            
+            // Update active button
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-day="${day}"]`).classList.add('active');
+            
+            // Find day data
+            const dayData = data.weeklyPlan.find(d => d.day.toLowerCase() === day);
+            
+            // Render content
+            renderDiet(dayData);
+            renderWorkout(dayData);
+            renderCore();
+            
+            // Reset progress
+            updateProgress();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers to day buttons
+            document.querySelectorAll('.day-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    switchDay(this.dataset.day);
+                });
+            });
+            
+            // Load Monday by default
+            switchDay('monday');
+        });
+    </script>
+</body>
+</html>
